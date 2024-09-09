@@ -1,6 +1,87 @@
 body{
+    font-family: Arial, Helvetica, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    margin: 0;
+    padding: 12px;
+    min-height: 50vh;
+    background-color: rgba(205, 198, 198, 0.496);
+}
+
+hr{
+    border: none;
+    height: 2px;
+    background-color: rgba(0, 162, 255, 0.873);
+    margin-bottom: 50px;
+
+}
+
+.Title-page{
+    color: blueviolet;
+}
+
+.informative-text{
+    font-size: 1.2em;
+}
+
+.matrix-range{
+    display: flex;
+    text-align: center;
+    align-items: center;
+    margin-bottom: 25px;
+}
+.input-checkBox{
+    width: 22px;
+    height: 22px;
+}
+.label-checkBox{
+    font-weight: 600;
+    font-size: 1.1em;
+}
+
+.range-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 50px;
+}
+.label-matrix{
+    font-size: 1.1em;
+    font-style: italic;
+    font-weight: 600;
+    margin: 12px;
+    color: rgb(17, 125, 127);
+
+}
+.input-matrix{
+    width: 8%;
+    text-align: center;
+    font-size: 1em;
+}
+
+.operator-select{
+    width: 35%;
+    font-size: 1.2em;
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.btn-createMX{
+    text-transform: uppercase;
+    position: absolute;
+    text-align: center;
+    color: white;
+    background-color: rgba(0, 162, 255, 0.873);
+    border-radius: 15px;
+    border: none;
+    left: 50%;
+    padding: 10px;
+    transform: translate(-50%, 50%);
+    font-size: 1em;
+}
+.btn-createMX:hover{
+    background-color: rgba(3, 87, 135, 0.873);
+    cursor: pointer;
 }

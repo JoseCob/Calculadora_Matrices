@@ -28,7 +28,7 @@ const matrixStructure: React.FC <MatrixProps> = ({
   const [matrixA, setMatrixA] = useState<number[][]>([]);
   const [matrixB, setMatrixB] = useState<number[][]>([]);
 
-  //Estado para controlar el clic del botón "Crear Matriz y un mensaje de error, en caso de haberlo"
+  //Estados para controlar el clic del botón "Crear Matriz y un mensaje de error, en caso de haberlo"
   const [createMatrix, setCreateMatrix] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [operation, setOperation] = useState<string | null>(null);//Este se encargara de validar las operaciones de las matrices en el "select"
@@ -48,24 +48,24 @@ const matrixStructure: React.FC <MatrixProps> = ({
       setCreateMatrix(true);
     }
   }, [createMatrix, rowsA, columnsA, rowsB, columnsB]);
-
-  //función para manejar la creación de matrices cuando se presiona el botón y con validación del límite permitido del tamaño para la matriz
-  const handleCreateMatrix = () => {
-    console.log('¡Creaste la matriz!'); //Muestra un mensaje en la consola, cuando hacemos clic en el botón
+  
+  // -- Manejo de Evento con TypeScript --
+  /*función con evento para manejar la creación de matrices cuando se presiona el botón y con validación del límite permitido del 
+  tamaño para la matriz*/
+  const handleCreateMatrix = (event: React.MouseEvent<HTMLButtonElement>) => {
+    console.log('¡Creaste la matriz!', event); //Muestra un mensaje en la consola, cuando hacemos clic en el botón
     if (rowsA > maxRows || columnsA > maxColumns || rowsB > maxRows || columnsB > maxColumns) {
       setError(errorMessage);
-      console.log(errorMessage); //Mostramos un error en consola del navegador
+      console.error(errorMessage); //Mostramos un error en consola del navegador
       return;
     }
     setError(null); //Limpia el error
     setCreateMatrix(true); //Esto hara uso del useEffect y generara las matrices al clickear el botón "Crear Matriz"
   };
 
-  // -- Manejo de Evento con TypeScript --
-  //Este evento eliminar o borra la matriz creada en la página y lo regresa a su valor iniciar
+  //Este evento eliminar o borra la matriz creada en la página y lo regresa a su valor inicial
   const handleReturnMatrix = (event: React.MouseEvent<HTMLButtonElement>) => {
     console.log('Eliminaste la matriz', event);
-
     // Resetea todos los estados a su valor inicial
     setMatrixA([]);
     setMatrixB([]);
@@ -152,14 +152,14 @@ const matrixStructure: React.FC <MatrixProps> = ({
 
       {createMatrix && (
       <>
-        <h3>Matriz A</h3>
-        <table>
+        <h3 className='titleMx'>Matriz A</h3>
+        <table className='table-matrix'>
           <tbody>
             {matrixA.map((row, rowIndex) =>(
               <tr key={rowIndex}>
                 {row.map((cell, colIndex) => (
                   <td key={colIndex}>
-                    <input type='text' value={cell} 
+                    <input className='input-table' type='text' value={cell} 
                       onChange={(e) => {
                         const value = Number (e.target.value);
                         if(!isNaN(value)) { //El "!isNaN" solo Permite números en las celdas, por lo que ignora las cadenas de texto
@@ -178,14 +178,14 @@ const matrixStructure: React.FC <MatrixProps> = ({
           </tbody>
         </table>
 
-        <h3>Matriz B</h3>
-        <table>
+        <h3 className='titleMx'>Matriz B</h3>
+        <table className='table-matrix'>
           <tbody>
             {matrixB.map((row, rowIndex) =>(
               <tr key={rowIndex}>
                 {row.map((cell, colIndex) => (
                   <td key={colIndex}>
-                    <input type='text' value={cell} 
+                    <input className='input-table' type='text' value={cell} 
                       onChange={(e) => {
                         const value = Number (e.target.value);
                         if(!isNaN(value)) {
@@ -204,27 +204,28 @@ const matrixStructure: React.FC <MatrixProps> = ({
           </tbody>
         </table>
 
-        <h2>Tipo de operación: </h2>
+        <div className='container-btn'>
+          <button className = 'btn-return-matrix' onClick={handleReturnMatrix}>Borrar Matriz</button>
+        </div>
+        
+        <h2 className='title-select'>Tipo de operación: </h2>
         <div>
-          <select className='operator-select'
+          <select className='operator-select' aria-label='operation-select'
+            value={operation || 'null'} //Utiliza el valor del estado para seleccionar la opción
             onChange={(e) => setOperation(e.target.value)}
             disabled={!isSquareMatrix && operation === "multiplicacion"}
           >
-            <option value='null' selected> -- Seleccionar Operación -- </option>
+            <option value='null'> -- Seleccionar Operación -- </option>
             <option value='suma'> Suma A + B </option>
             <option value='resta'> Resta A - B </option>
             <option value='multiplicacion' disabled={!isSquareMatrix}> Multiplicación A x B </option>
           </select>
         </div>
 
-        <div className='container-btn'>
-          <button className = 'btn-return-matrix' onClick={handleReturnMatrix}>Borrar Matriz</button>
-        </div>
-
         {/* Aquí renderizamos el componente de las operaciones de las matrices */}
         <Operations matrixA={matrixA} matrixB={matrixB} operation={operation}>
           {/* llamamos el contenido de las operaciones como children */}
-          <p>Operación realizada: {operation}</p>{/* Obtenemos el tipo de operador que se esta realizando en pantalla*/}
+          <p>Operación realizada: <strong>{operation}</strong></p>{/* Obtenemos el tipo de operador que se esta realizando en pantalla*/}
         </Operations>
       </>
       )}

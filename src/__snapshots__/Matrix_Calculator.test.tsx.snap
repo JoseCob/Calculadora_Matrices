@@ -1,0 +1,139 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`MatrixStructure > coincide con la instantánea 1`] = `
+<DocumentFragment>
+  <div>
+    <h1>
+      Estructura de la matriz
+    </h1>
+    <div
+      class="range-container"
+    >
+      <p>
+        Matriz A
+      </p>
+      <label
+        class="label-matrix"
+      >
+        Filas: 
+      </label>
+      <input
+        class="input-matrix"
+        type="text"
+        value="2"
+      />
+      <label
+        class="label-matrix"
+      >
+        Columnas: 
+      </label>
+      <input
+        class="input-matrix"
+        type="text"
+        value="2"
+      />
+    </div>
+    <div
+      class="range-container"
+    >
+      <p>
+        Matriz B
+      </p>
+      <label
+        class="label-matrix"
+      >
+        Filas: 
+      </label>
+      <input
+        class="input-matrix"
+        type="text"
+        value="2"
+      />
+      <label
+        class="label-matrix"
+      >
+        Columnas: 
+      </label>
+      <input
+        class="input-matrix"
+        type="text"
+        value="2"
+      />
+    </div>
+    <button
+      class="btn-createMX"
+    >
+      Crear Matriz
+    </button>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Operations >  matches snapshot 1`] = `
+<DocumentFragment>
+  <div>
+    <h1>
+      Estructura de la matriz
+    </h1>
+    <div
+      class="range-container"
+    >
+      <p>
+        Matriz A
+      </p>
+      <label
+        class="label-matrix"
+      >
+        Filas: 
+      </label>
+      <input
+        class="input-matrix"
+        type="text"
+        value="2"
+      />
+      <label
+        class="label-matrix"
+      >
+        Columnas: 
+      </label>
+      <input
+        class="input-matrix"
+        type="text"
+        value="2"
+      />
+    </div>
+    <div
+      class="range-container"
+    >
+      <p>
+        Matriz B
+      </p>
+      <label
+        class="label-matrix"
+      >
+        Filas: 
+      </label>
+      <input
+        class="input-matrix"
+        type="text"
+        value="2"
+      />
+      <label
+        class="label-matrix"
+      >
+        Columnas: 
+      </label>
+      <input
+        class="input-matrix"
+        type="text"
+        value="2"
+      />
+    </div>
+    <button
+      class="btn-createMX"
+    >
+      Crear Matriz
+    </button>
+  </div>
+</DocumentFragment>
+`;

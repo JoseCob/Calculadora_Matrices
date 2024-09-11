@@ -31,7 +31,7 @@ const matrixStructure: React.FC <MatrixProps> = ({
   //Estados para controlar el clic del botón "Crear Matriz y un mensaje de error, en caso de haberlo"
   const [createMatrix, setCreateMatrix] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [operation, setOperation] = useState<string | null>(null);//Este se encargara de validar las operaciones de las matrices en el "select"
+  const [operation, setOperation] = useState<string>('Sin valor');//Este se encargara de validar las operaciones de las matrices en el "select"
 
   //useEffect para generar la Matriz "A" cuando se crea la matriz
   useEffect(() => {
@@ -74,29 +74,40 @@ const matrixStructure: React.FC <MatrixProps> = ({
     setColumnsA(2); //Se restablece a 2 nuevamente la columna A
     setRowsB(2); //Se restablece a 2 nuevamente la fila A
     setColumnsB(2); //Se restablece a 2 nuevamente la columna B
+    setOperation('Sin valor');
   };
 
   //Genera la validación si la matriz es cuadrada para operaciones de multiplicación
   const isSquareMatrix = rowsA === columnsA && rowsB === columnsB;
+  //Genera la validación si la matriz es cuadrada para operaciones de inversa A
+  const isreverseA = rowsA === columnsA && rowsB === columnsB;
+  //Genera la validación si la matriz es cuadrada para operaciones de inversa B
+  const isreverseB = rowsA === columnsA && rowsB === columnsB;
 
   //Visualización del html de la página
   return (
     <div>
       <h1>Estructura de la matriz</h1>
+        <p><strong>Nota*: </strong> Solo se puede sacar la inversa de una matriz y su multiplicación cuando sea cuadrada,
+        <p>de lo contrario se 
+        desabilitara las opciones para realizar esas operaciones</p>
+      </p>
 
       {/* Sección de la Matriz A */}
       {/* Solo se mostrara esta sección si las filas y las columnas no han creado las matrices*/}
       {!createMatrix && (
         <>
-          {/* Mostrar mensaje de error en pantalla si el límite es excedido */}
-          {error && <p style={{ color: "red" }}>{error}</p>}
+          {/* Mostrar mensaje de error en pantalla si el límite de filas y columnas es excedido */}
+          {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}{/* Muestra el mensaje de error en pantalla */}
 
+          {/* Bloque que crea el input para añadir los valores necesarios para las filas */}
           <div className='range-container'>
             <p>Matriz A</p>
             <label className='label-matrix'>Filas: </label>
             <input
               className='input-matrix' type = 'text' value={rowsA}
               onChange={(e) => {
+                //Establecemos que no se pueda introducir caracteres en el input
                 const value = e.target.value;
                 if (/^\d*$/.test(value)){
                   setRowsA(Number(value));
@@ -104,6 +115,7 @@ const matrixStructure: React.FC <MatrixProps> = ({
               }} 
             />
 
+            {/* Bloque que crea el input para añadir los valores necesarios para las columnas */}
             <label className='label-matrix'>Columnas: </label>
             <input
               className='input-matrix' type='text' value = {columnsA}
@@ -159,7 +171,7 @@ const matrixStructure: React.FC <MatrixProps> = ({
               <tr key={rowIndex}>
                 {row.map((cell, colIndex) => (
                   <td key={colIndex}>
-                    <input className='input-table' type='text' value={cell} 
+                    <input className='input-table' type='number' value={cell} 
                       onChange={(e) => {
                         const value = Number (e.target.value);
                         if(!isNaN(value)) { //El "!isNaN" solo Permite números en las celdas, por lo que ignora las cadenas de texto
@@ -185,8 +197,9 @@ const matrixStructure: React.FC <MatrixProps> = ({
               <tr key={rowIndex}>
                 {row.map((cell, colIndex) => (
                   <td key={colIndex}>
-                    <input className='input-table' type='text' value={cell} 
+                    <input className='input-table' type='number' value={cell} 
                       onChange={(e) => {
+                        //Funcion que nos permite el uso de los string a dato númerico 
                         const value = Number (e.target.value);
                         if(!isNaN(value)) {
                           setMatrixB((prevMatrix) => {
@@ -213,19 +226,21 @@ const matrixStructure: React.FC <MatrixProps> = ({
           <select className='operator-select' aria-label='operation-select'
             value={operation || 'null'} //Utiliza el valor del estado para seleccionar la opción
             onChange={(e) => setOperation(e.target.value)}
-            disabled={!isSquareMatrix && operation === "multiplicacion"}
+            disabled={!isSquareMatrix && operation === "multiplicacion" || !isreverseA && operation === "inversa A" || !isreverseB && operation === "inversa B"}
           >
-            <option value='null'> -- Seleccionar Operación -- </option>
+            <option value='Sin valor'> -- Seleccionar Operación -- </option>
             <option value='suma'> Suma A + B </option>
             <option value='resta'> Resta A - B </option>
             <option value='multiplicacion' disabled={!isSquareMatrix}> Multiplicación A x B </option>
+            <option value='inversa A' disabled={!isreverseA}>Inversa A</option>
+            <option value='inversa B' disabled={!isreverseB}>Inversa B</option>
           </select>
         </div>
 
         {/* Aquí renderizamos el componente de las operaciones de las matrices */}
         <Operations matrixA={matrixA} matrixB={matrixB} operation={operation}>
           {/* llamamos el contenido de las operaciones como children */}
-          <p>Operación realizada: <strong>{operation}</strong></p>{/* Obtenemos el tipo de operador que se esta realizando en pantalla*/}
+          <p className='text-operator'>Operación realizada: <strong>{operation}</strong></p>{/* Obtenemos el tipo de operador que se esta realizando en pantalla*/}
         </Operations>
       </>
       )}

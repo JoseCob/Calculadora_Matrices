@@ -9,10 +9,10 @@ const mxOperationsPropsSchema = z.object({
   children: z.any().optional() // Validamos que children sea opcional, puede ser cualquier cosa (ReactNode)
 });
 
-// Definimos el tipo de los props usando Zod
+//Definimos los props usando Zod
 type MXOperationsProps = z.infer<typeof mxOperationsPropsSchema>;
 
-// Función para calcular el determinante de una matriz cuadrada
+//Función para calcular el determinante de una matriz cuadrada
 const determinant = (matrix: number[][]): number | null => {
   if (matrix.length !== matrix[0].length) return null;
 
@@ -32,7 +32,7 @@ const determinant = (matrix: number[][]): number | null => {
   return null;
 };
 
-// Función para calcular la inversa de una matriz cuadrada
+//Función para calcular la inversa de una matriz cuadrada
 const invertMatrix = (matrix: number[][]): number[][] | null => {
   if (matrix.length !== matrix[0].length) return null;
 
@@ -63,7 +63,7 @@ const invertMatrix = (matrix: number[][]): number[][] | null => {
   return null;
 };
 
-// Validamos los props usando Zod y la propiedad safeParse
+//Validamos los props usando Zod y la propiedad safeParse
 const validateProps = (props: any) => {
   const result = mxOperationsPropsSchema.safeParse(props); // El safeParse valida datos de forma segura
   if (!result.success) {
@@ -83,12 +83,13 @@ const Operations: React.FC<MXOperationsProps> = (props) => {
 
   const { matrixA, matrixB, operation, children } = validProps;
 
-  const calculateResult = (): { result: number[][] | null; det: number | null; inv: number[][] | null } => {
-    if (!operation || !matrixA.length || !matrixB.length) return { result: null, det: null, inv: null };
+  const calculateResult = (): { result: number[][] | null; det: number | null; invA: {matrix: number[][] | null, det: number | null}; invB: {matrix: number[][] | null, det: number | null} } => {
+    if (!operation || !matrixA.length || !matrixB.length) return { result: null, det: null, invA: { matrix: null, det: null }, invB: { matrix: null, det: null } };
 
     let result: number[][] = [];
     let det: number | null = null;
-    let inv: number[][] | null = null;
+    let invA: { matrix: number[][] | null, det: number | null } = { matrix: null, det: null };
+    let invB: { matrix: number[][] | null, det: number | null } = { matrix: null, det: null };
 
     // Operaciones de matrices: Suma, Resta, Multiplicación
     if (operation === 'suma') {
@@ -113,25 +114,30 @@ const Operations: React.FC<MXOperationsProps> = (props) => {
         }
       } else {
         console.error("Las matrices deben ser compatibles para la multiplicación.");
-        return { result: null, det: null, inv: null };
+        return { result: null, det: null, invA: { matrix: null, det: null }, invB: { matrix: null, det: null } };
       }
-    } else if (operation === 'inversa') {
-      inv = invertMatrix(matrixA);
+    } else if (operation === 'inversa A') {
+      invA.matrix = invertMatrix(matrixA);
+      invA.det = determinant(matrixA);
+    } else if (operation === 'inversa B') {
+      invB.matrix = invertMatrix(matrixB);
+      invB.det = determinant(matrixB);
     } else if (operation === 'determinante') {
-      det = determinant(matrixA);
+      det = determinant(matrixA)
     }
 
-    return { result, det, inv };
+    return { result, det, invA, invB };
   };
 
-  const { result, det, inv } = calculateResult();
+  const { result, det, invA, invB } = calculateResult();
 
   return (
     <div>
       <h3>Resultado de la operación:</h3>
       {/* Se renderiza el resultado de la operación de la matriz */}
       {result && result.length ? (
-        <table>
+        // Aqui se esta creando los resultados de las matrices de manera simetrica en forma de tabla
+        <table className='matrix-table'>
           <tbody>
             {result.map((row, rowIndex) => (
               <tr key={rowIndex}>
@@ -144,23 +150,44 @@ const Operations: React.FC<MXOperationsProps> = (props) => {
         </table>
       ) : det !== null ? (
         <p>Determinante: {det}</p>
-      ) : inv && inv.length ? (
+      ) : invA.matrix && invA.matrix.length ? (
         <>
-          <p>Inversa de la matriz:</p>
-          <table>
+          <p className='text-operator'>Inversa de la matriz A:</p>
+          <table className='matrix-table'>
             <tbody>
-              {inv.map((row, rowIndex) => (
+            {invA.matrix.map((row, rowIndex) => (
                 <tr key={rowIndex}>
                   {row.map((cell, colIndex) => (
-                    <td key={colIndex}>{cell}</td>
+                    <td key={colIndex}>{cell.toFixed(2)} { /* Limita los decimales a 2 */ } </td>
                   ))}
                 </tr>
               ))}
             </tbody>
           </table>
+          <p className='text-operator'>Determinante de la Matriz A: {invA.det}</p>
         </>
+      ) : invB.matrix && invB.matrix.length ? (
+        <>
+          <p className='text-operator'>Inversa de la Matriz B:</p>
+          <table className='matrix-table'>
+            <tbody>
+              {invB.matrix.map((row, rowIndex) => (
+                <tr key={rowIndex}>
+                  {row.map((cell, colIndex) => (
+                    <td key={colIndex}>{cell.toFixed(2)} { /* Limita los decimales a 2 */ }</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className='text-operator'>Determinante de la Matriz B: {invB.det}</p>
+        </>
+      ) : invA.matrix === null ? (
+        <p className='text-operator'>La Matriz no es invertible (Determinante 0).</p>
+      ) : invB.matrix === null ? (
+        <p className='text-operator'>La Matriz no es invertible (Determinante 0).</p>
       ) : (
-        <p>No hay resultados disponibles</p>
+        <p className='text-operator'>No hay resultados disponibles</p>
       )}
 
       {/* Mostramos o llamamos al children del componente */}
